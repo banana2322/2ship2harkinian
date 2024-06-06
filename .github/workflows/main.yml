@@ -1,7 +1,7 @@
 name: generate-builds
 on:
-  push:
-  pull_request:
+  # push:
+  # pull_request:
   workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -379,3 +379,20 @@ jobs:
       with:
         name: 2ship-windows
         path: 2ship-windows
+
+  release-artifacts:
+    needs: [build-macos, build-linux, build-windows]
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: release-artifacts
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "Latest"
+          files: |
+            2ship-macos*
+            2ship-linux*
+            2ship-windows*
+            
