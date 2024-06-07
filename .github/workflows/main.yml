@@ -384,6 +384,10 @@ jobs:
     needs: [build-macos, build-linux, build-windows]
     runs-on: "ubuntu-latest"
     steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: 2ship-*
       - name: release-artifacts
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
@@ -392,7 +396,4 @@ jobs:
           prerelease: false
           title: "Latest"
           files: |
-            2ship-macos*
-            2ship-linux*
-            2ship-windows*
-            
+            2ship-*
