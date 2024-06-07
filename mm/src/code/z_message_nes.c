@@ -1331,7 +1331,7 @@ void Message_DecodeNES(PlayState* play) {
                 }
             }
 
-            if ((gSaveContext.save.saveInfo.inventory.strayFairies[(void)0, gSaveContext.dungeonIndex] == 1) ||
+            /*if ((gSaveContext.save.saveInfo.inventory.strayFairies[(void)0, gSaveContext.dungeonIndex] == 1) ||
                 (gSaveContext.save.saveInfo.inventory.strayFairies[(void)0, gSaveContext.dungeonIndex] == 21)) {
                 Message_LoadCharNES(play, '\x2d', &charTexIndex, &spA4, decodedBufPos);
                 decodedBufPos++;
@@ -1358,7 +1358,7 @@ void Message_DecodeNES(PlayState* play) {
                 Message_LoadCharNES(play, '\xab', &charTexIndex, &spA4, decodedBufPos);
                 decodedBufPos++;
                 Message_LoadCharNES(play, '\x9e', &charTexIndex, &spA4, decodedBufPos);
-            }
+            }*/
         } else if (curChar == 0xD) {
             digits[0] = digits[1] = 0;
             digits[2] = Inventory_GetSkullTokenCount(play->sceneId);
@@ -1383,7 +1383,7 @@ void Message_DecodeNES(PlayState* play) {
                 }
             }
 
-            if ((Inventory_GetSkullTokenCount(play->sceneId) == 1) ||
+            /*if ((Inventory_GetSkullTokenCount(play->sceneId) == 1) ||
                 (Inventory_GetSkullTokenCount(play->sceneId) == 21)) {
                 Message_LoadCharNES(play, '\x2d', &charTexIndex, &spA4, decodedBufPos);
                 decodedBufPos++;
@@ -1410,7 +1410,7 @@ void Message_DecodeNES(PlayState* play) {
                 Message_LoadCharNES(play, '\xab', &charTexIndex, &spA4, decodedBufPos);
                 decodedBufPos++;
                 Message_LoadCharNES(play, '\x9e', &charTexIndex, &spA4, decodedBufPos);
-            }
+            }*/
         } else if (curChar == 0xE) {
             digits[0] = 0;
             digits[1] = gSaveContext.minigameScore;
@@ -1686,7 +1686,7 @@ void Message_DecodeNES(PlayState* play) {
                 }
             }
             msgCtx->decodedBuffer.schar[decodedBufPos] = ' ';
-            decodedBufPos++;
+            /*decodedBufPos++;
             Message_LoadCharNES(play, '\xa7', &charTexIndex, &spA4, decodedBufPos); // ч
             decodedBufPos++;
             Message_LoadCharNES(play, '\x61', &charTexIndex, &spA4, decodedBufPos); // а
@@ -1708,7 +1708,7 @@ void Message_DecodeNES(PlayState* play) {
                 Message_LoadCharNES(play, '\x6f', &charTexIndex, &spA4, decodedBufPos); // о
                 decodedBufPos++;
                 Message_LoadCharNES(play, '\x97', &charTexIndex, &spA4, decodedBufPos); // в
-            }
+            }*/
             
         } else if (curChar == 0xE8) {
             Message_LoadTimeNES(play, curChar, &charTexIndex, &spA4, &decodedBufPos);
