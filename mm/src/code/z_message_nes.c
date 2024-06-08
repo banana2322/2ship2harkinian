@@ -1685,8 +1685,8 @@ void Message_DecodeNES(PlayState* play) {
                     decodedBufPos++;
                 }
             }
-            msgCtx->decodedBuffer.schar[decodedBufPos] = ' ';
-            /*decodedBufPos++;
+            /*msgCtx->decodedBuffer.schar[decodedBufPos] = ' ';
+            decodedBufPos++;
             Message_LoadCharNES(play, '\xa7', &charTexIndex, &spA4, decodedBufPos); // ч
             decodedBufPos++;
             Message_LoadCharNES(play, '\x61', &charTexIndex, &spA4, decodedBufPos); // а
