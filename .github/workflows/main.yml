@@ -387,13 +387,14 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: 2ship-*
+          pattern: 2ship-*
+          merge-multiple: true
       - name: release-artifacts
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
           prerelease: false
-          title: "Latest"
+          title: "small fix"
           files: |
             2ship-*
