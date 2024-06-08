@@ -389,6 +389,8 @@ jobs:
         with:
           pattern: 2ship-*
           merge-multiple: true
+          path: /
+      - run: ls -R
       - name: release-artifacts
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
@@ -397,4 +399,4 @@ jobs:
           prerelease: false
           title: "small fix"
           files: |
-            2ship-*
+            /2ship-*
