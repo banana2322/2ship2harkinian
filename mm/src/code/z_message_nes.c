@@ -1330,7 +1330,7 @@ void Message_DecodeNES(PlayState* play) {
                     decodedBufPos++;
                 }
             }
-
+            decodedBufPos--;
             /*if ((gSaveContext.save.saveInfo.inventory.strayFairies[(void)0, gSaveContext.dungeonIndex] == 1) ||
                 (gSaveContext.save.saveInfo.inventory.strayFairies[(void)0, gSaveContext.dungeonIndex] == 21)) {
                 Message_LoadCharNES(play, '\x2d', &charTexIndex, &spA4, decodedBufPos);
@@ -1382,7 +1382,7 @@ void Message_DecodeNES(PlayState* play) {
                     decodedBufPos++;
                 }
             }
-
+            decodedBufPos--;
             /*if ((Inventory_GetSkullTokenCount(play->sceneId) == 1) ||
                 (Inventory_GetSkullTokenCount(play->sceneId) == 21)) {
                 Message_LoadCharNES(play, '\x2d', &charTexIndex, &spA4, decodedBufPos);
