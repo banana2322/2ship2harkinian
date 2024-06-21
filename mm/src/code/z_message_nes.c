@@ -974,12 +974,12 @@ u8 D_801D08E4[] = {
     0x02,
 };
 
-#define RED_STR "RED"
-#define BLUE_STR "BLUE"
-#define YELLOW_STR "YELLOW"
-#define GREEN_STR "GREEN"
+#define RED_STR "\x4b\x50\x41\x43\x48\x91\x86" // КРАСНЫЙ
+#define BLUE_STR "\x43\x85\x48\x85\x86" // СИНИЙ
+#define YELLOW_STR "\x83\x45\x87\x54\x91\x86" // ЖЕЛТЫЙ
+#define GREEN_STR "\x84\x45\x87\x82\x48\x91\x86" // ЗЕЛЁНЫЙ
 
-char sMaskCodeTextENG[][6] = {
+char sMaskCodeTextENG[][7] = {
     RED_STR,
     BLUE_STR,
     YELLOW_STR,
