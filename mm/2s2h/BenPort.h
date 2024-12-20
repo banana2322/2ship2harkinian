@@ -24,20 +24,24 @@ class OTRGlobals {
   public:
     static OTRGlobals* Instance;
 
+    ImFont* fontStandard;
+    ImFont* fontStandardLarger;
+    ImFont* fontStandardLargest;
+    ImFont* fontMono;
+    ImFont* fontMonoLarger;
+    ImFont* fontMonoLargest;
+
     std::shared_ptr<Ship::Context> context;
 
     OTRGlobals();
     ~OTRGlobals();
 
-    bool HasMasterQuest();
-    bool HasOriginal();
     uint32_t GetInterpolationFPS();
     std::shared_ptr<std::vector<std::string>> ListFiles(std::string path);
 
   private:
+    ImFont* CreateFontWithSize(float size, std::string fontPath = "");
     void CheckSaveFile(size_t sramSize) const;
-    bool hasMasterQuest;
-    bool hasOriginal;
 };
 
 uint32_t IsGameMasterQuest();
@@ -87,6 +91,7 @@ Gfx* ResourceMgr_LoadGfxByCRC(uint64_t crc);
 Gfx* ResourceMgr_LoadGfxByName(const char* path);
 void ResourceMgr_PatchGfxByName(const char* path, const char* patchName, int index, Gfx instruction);
 void ResourceMgr_UnpatchGfxByName(const char* path, const char* patchName);
+u8* ResourceMgr_LoadArrayByNameAsU8(const char* path, u8* buffer);
 char* ResourceMgr_LoadArrayByNameAsVec3s(const char* path);
 char* ResourceMgr_LoadArrayByName(const char* path);
 size_t ResourceMgr_GetArraySizeByName(const char* path);
@@ -94,6 +99,7 @@ Vtx* ResourceMgr_LoadVtxByCRC(uint64_t crc);
 char* ResourceMgr_LoadVtxArrayByName(const char* path);
 size_t ResourceMgr_GetVtxArraySizeByName(const char* path);
 Vtx* ResourceMgr_LoadVtxByName(char* path);
+Mtx* ResourceMgr_LoadMtxByName(char* path);
 
 KeyFrameSkeleton* ResourceMgr_LoadKeyFrameSkelByName(const char* path);
 KeyFrameAnimation* ResourceMgr_LoadKeyFrameAnimByName(const char* path);
@@ -102,6 +108,7 @@ void Ctx_ReadSaveFile(uintptr_t addr, void* dramAddr, size_t size);
 void Ctx_WriteSaveFile(uintptr_t addr, void* dramAddr, size_t size);
 
 uint64_t GetPerfCounter();
+bool ResourceMgr_IsAltAssetsEnabled();
 struct SkeletonHeader* ResourceMgr_LoadSkeletonByName(const char* path, SkelAnime* skelAnime);
 void ResourceMgr_UnregisterSkeleton(SkelAnime* skelAnime);
 void ResourceMgr_ClearSkeletons();
@@ -129,6 +136,7 @@ void Controller_BlockGameInput();
 void Controller_UnblockGameInput();
 void Overlay_DisplayText(float duration, const char* text);
 void Overlay_DisplayText_Seconds(int seconds, const char* text);
+uint32_t Ship_GetInterpolationFPS();
 
 void Gfx_RegisterBlendedTexture(const char* name, u8* mask, u8* replacement);
 void Gfx_UnregisterBlendedTexture(const char* name);

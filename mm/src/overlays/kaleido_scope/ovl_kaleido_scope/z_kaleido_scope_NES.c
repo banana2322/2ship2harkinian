@@ -22,7 +22,9 @@
 
 #include "2s2h_assets.h"
 
-#include "2s2h/Enhancements/GameInteractor/GameInteractor.h"
+#include "2s2h/GameInteractor/GameInteractor.h"
+
+#include "2s2h/Enhancements/Songs/Songs.h"
 
 // Page Textures (Background of Page):
 // Broken up into multiple textures.
@@ -832,7 +834,9 @@ void KaleidoScope_DrawPages(PlayState* play, GraphicsContext* gfxCtx) {
                     POLY_OPA_DISP =
                         KaleidoScope_DrawPageSections(POLY_OPA_DISP, pauseCtx->itemPageVtx, sItemPageBgTextures);
 
+                    GameInteractor_ExecuteBeforeKaleidoDrawPage(pauseCtx, pauseCtx->pageIndex);
                     KaleidoScope_DrawItemSelect(play);
+                    GameInteractor_ExecuteAfterKaleidoDrawPage(pauseCtx, pauseCtx->pageIndex);
                 }
                 break;
 
@@ -853,6 +857,7 @@ void KaleidoScope_DrawPages(PlayState* play, GraphicsContext* gfxCtx) {
 
                 POLY_OPA_DISP = KaleidoScope_DrawPageSections(POLY_OPA_DISP, pauseCtx->mapPageVtx, sMapPageBgTextures);
 
+                GameInteractor_ExecuteBeforeKaleidoDrawPage(pauseCtx, pauseCtx->pageIndex);
                 if (sInDungeonScene) {
                     KaleidoScope_DrawDungeonMap(play);
                     Gfx_SetupDL42_Opa(gfxCtx);
@@ -882,6 +887,7 @@ void KaleidoScope_DrawPages(PlayState* play, GraphicsContext* gfxCtx) {
 
                     KaleidoScope_DrawWorldMap(play);
                 }
+                GameInteractor_ExecuteAfterKaleidoDrawPage(pauseCtx, pauseCtx->pageIndex);
                 break;
 
             case PAUSE_QUEST:
@@ -904,7 +910,9 @@ void KaleidoScope_DrawPages(PlayState* play, GraphicsContext* gfxCtx) {
                 POLY_OPA_DISP =
                     KaleidoScope_DrawPageSections(POLY_OPA_DISP, pauseCtx->questPageVtx, sQuestPageBgTextures);
 
+                GameInteractor_ExecuteBeforeKaleidoDrawPage(pauseCtx, pauseCtx->pageIndex);
                 KaleidoScope_DrawQuestStatus(play);
+                GameInteractor_ExecuteAfterKaleidoDrawPage(pauseCtx, pauseCtx->pageIndex);
                 break;
 
             case PAUSE_MASK:
@@ -925,7 +933,9 @@ void KaleidoScope_DrawPages(PlayState* play, GraphicsContext* gfxCtx) {
                 POLY_OPA_DISP =
                     KaleidoScope_DrawPageSections(POLY_OPA_DISP, pauseCtx->maskPageVtx, sMaskPageBgTextures);
 
+                GameInteractor_ExecuteBeforeKaleidoDrawPage(pauseCtx, pauseCtx->pageIndex);
                 KaleidoScope_DrawMaskSelect(play);
+                GameInteractor_ExecuteAfterKaleidoDrawPage(pauseCtx, pauseCtx->pageIndex);
                 break;
         }
     }
@@ -2901,19 +2911,23 @@ void KaleidoScope_UpdateCursorSize(PlayState* play) {
 
             case PAUSE_MAP:
                 if (!sInDungeonScene) {
-                    if (IS_PAUSE_STATE_OWLWARP) {
+                    if (IS_PAUSE_STATE_OWLWARP || PauseOwlWarp_IsOwlWarpEnabled()) {
                         pauseCtx->cursorX = sOwlWarpWorldMapCursorsX[pauseCtx->cursorPoint[PAUSE_WORLD_MAP]];
                         pauseCtx->cursorY = sOwlWarpWorldMapCursorsY[pauseCtx->cursorPoint[PAUSE_WORLD_MAP]];
                     } else {
                         pauseCtx->cursorX = sWorldMapCursorsX[pauseCtx->cursorPoint[PAUSE_WORLD_MAP]];
                         pauseCtx->cursorY = sWorldMapCursorsY[pauseCtx->cursorPoint[PAUSE_WORLD_MAP]];
                     }
-                    if (!IS_PAUSE_STATE_OWLWARP) {
+                    if (!IS_PAUSE_STATE_OWLWARP && !PauseOwlWarp_IsOwlWarpEnabled()) {
                         pauseCtx->cursorHeight = 10.0f;
                         pauseCtx->cursorWidth = 10.0f;
                     } else {
                         pauseCtx->cursorHeight = 15.0f;
                         pauseCtx->cursorWidth = 15.0f;
+                    }
+                    // Flip the position of the cursor with an additional offset to align with flipped map points
+                    if (CVarGetInteger("gModes.MirroredWorld.State", 0)) {
+                        pauseCtx->cursorX = (pauseCtx->cursorX * -1.0) + 5.0f;
                     }
                 } else {
                     pauseCtx->cursorX = sDungeonMapCursorsX[pauseCtx->cursorPoint[PAUSE_MAP]];
@@ -3011,6 +3025,18 @@ void KaleidoScope_DrawCursor(PlayState* play) {
     PauseContext* pauseCtx = &play->pauseCtx;
     s16 i;
 
+    // #region 2S2H [Port] Track cursor position so we can skip interpolation for one frame whenever it moves
+    static f32 prevX = 0;
+    static f32 prevY = 0;
+    static u8 cursorInterpState = 0;
+
+    if (prevX != pauseCtx->cursorX || prevY != pauseCtx->cursorY) {
+        cursorInterpState ^= 1; // Flip state
+    }
+    prevX = pauseCtx->cursorX;
+    prevY = pauseCtx->cursorY;
+    // #endregion
+
     OPEN_DISPS(play->state.gfxCtx);
 
     if ((pauseCtx->mainState == PAUSE_MAIN_STATE_IDLE) ||
@@ -3018,6 +3044,7 @@ void KaleidoScope_DrawCursor(PlayState* play) {
         ((pauseCtx->pageIndex == PAUSE_QUEST) && ((pauseCtx->mainState <= PAUSE_MAIN_STATE_SONG_PLAYBACK) ||
                                                   (pauseCtx->mainState == PAUSE_MAIN_STATE_SONG_PROMPT) ||
                                                   (pauseCtx->mainState == PAUSE_MAIN_STATE_IDLE_CURSOR_ON_SONG)))) {
+        FrameInterpolation_RecordOpenChild("Pause cursor", cursorInterpState ? 1 : 0);
         gDPPipeSync(POLY_OPA_DISP++);
         gDPSetCombineLERP(POLY_OPA_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
                           PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
@@ -3042,6 +3069,7 @@ void KaleidoScope_DrawCursor(PlayState* play) {
 
         gDPPipeSync(POLY_OPA_DISP++);
         gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 255);
+        FrameInterpolation_RecordCloseChild();
     }
 
     CLOSE_DISPS(play->state.gfxCtx);

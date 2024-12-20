@@ -1328,6 +1328,9 @@ void osContGetReadData(OSContPad* pad);
 // #region 2S2H [Port] Previously unavailable functions, made available for porting
 void PadMgr_ThreadEntry();
 void Heaps_Alloc(void);
+void KaleidoScope_UpdateOwlWarpNamePanel(PlayState* play);
+void KaleidoScope_UpdateNamePanel(PlayState* play);
+void SkinMatrix_Clear(MtxF* mf);
 // #endregion
 // #region 2S2H [Port] New methods added for porting
 void AudioSeq_SetPortVolumeScale(u8 seqPlayerIndex, f32 volume);
@@ -1339,6 +1342,8 @@ void Flags_SetWeekEventReg(s32 flag);
 void Flags_ClearWeekEventReg(s32 flag);
 void Flags_SetEventInf(s32 flag);
 void Flags_ClearEventInf(s32 flag);
+s32 Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projectedPos, f32 projectedW, bool* shouldDraw,
+                                 bool* shouldUpdate);
 // #endregion
 // #region 2S2H [Port] Stubbed methods
 void osSetThreadPri(OSThread* thread, OSPri p);

@@ -11,7 +11,8 @@
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/object_boss07/object_boss07.h"
 #include "overlays/actors/ovl_En_Clear_Tag/z_en_clear_tag.h"
-#include "BenPort.h"
+
+#include "2s2h/BenPort.h"
 #include "2s2h/Enhancements/FrameInterpolation/FrameInterpolation.h"
 
 #define FLAGS (ACTOR_FLAG_TARGETABLE | ACTOR_FLAG_UNFRIENDLY | ACTOR_FLAG_10 | ACTOR_FLAG_20)
@@ -2934,6 +2935,8 @@ void Boss07_Wrath_DrawShadowTex(u8* shadowTex, Boss07* this, PlayState* play) {
     GraphicsContext* gfxCtx = play->state.gfxCtx;
 
     OPEN_DISPS(gfxCtx);
+
+    gSPInvalidateTexCache(POLY_OPA_DISP++, shadowTex);
 
     Gfx_SetupDL25_Opa(play->state.gfxCtx);
     phi_f0 = (400.0f - this->actor.world.pos.y) * 0.0025f;
@@ -6078,7 +6081,7 @@ void Boss07_Static_DrawEffects(PlayState* play) {
     Gfx_SetupDL25_Xlu(play->state.gfxCtx);
     for (i = 0; i < ARRAY_COUNT(sEffects); i++, effect++) {
         if (effect->type > MAJORAS_EFFECT_NONE) {
-            FrameInterpolation_RecordOpenChild(effect, i);
+            FrameInterpolation_RecordOpenChild(effect, effect->type);
             gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, 200, 20, 0, effect->alpha);
             gDPPipeSync(POLY_XLU_DISP++);
             gDPSetEnvColor(POLY_XLU_DISP++, 255, 215, 255, 128);
